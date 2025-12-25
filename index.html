@@ -1,56 +1,73 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Simple Sheet PRO</title> 
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" href="web-app-manifest-192x192.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 8px; background-color: #f0f2f5; margin: 0; box-sizing: border-box; font-size: 16px; -webkit-text-size-adjust: 100%; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 8px; background-color: #f0f2f5; margin: 0; box-sizing: border-box; font-size: 16px; }
         * { box-sizing: border-box; }
         .app-grid { display: flex; gap: 12px; max-width: 1400px; margin: 0 auto; }
         .calculator-container { flex: 3; min-width: 0; background-color: #fff; padding: 12px; border-radius: 10px; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1); width: 100%; }
-        .top-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-        .master-name-group { flex: 1; display: flex; align-items: center; border: 2px solid #007bff; border-radius: 6px; padding: 4px 10px; background-color: #fff; min-width: 150px; }
-        .master-name-input { flex-grow: 1; border: none; font-size: 1em; outline: none; font-weight: bold; width: 100%; }
-        .lang-switch { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; flex: 1; }
-        .master-row { padding: 12px; margin-bottom: 12px; border: 3px solid #dc3545; border-radius: 10px; background-color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .master-label-start { font-weight: bold; color: #dc3545; font-size: 1.1em; flex: 1; white-space: nowrap; }
-        .master-input { width: 45%; max-width: 180px; padding: 8px; border: 2px solid #dc3545; border-radius: 6px; font-size: 1.5em; text-align: right; font-weight: bold; }
-        .row { display: flex; align-items: center; margin-bottom: 8px; padding: 10px; border: 1px solid #ccc; border-radius: 10px; background-color: #fff; gap: 6px; }
-        .text-label-input { flex: 1; min-width: 0; padding: 8px; border: 1px solid #bbb; border-radius: 6px; font-size: 1em; font-weight: bold; }
-        .operator-group { display: flex; flex-direction: column; align-items: center; width: 22px; flex-shrink: 0; }
-        .operator-control { font-size: 0.5em; background: #333; color: #fff; width: 100%; height: 16px; display: flex; justify-content: center; align-items: center; border-radius: 3px; cursor: pointer; }
-        .operator-display { font-size: 1.4em; font-weight: bold; text-align: center; color: #000; width: 100%; height: 28px; line-height: 28px; }
-        .multiplier-input { width: 30%; min-width: 90px; padding: 10px 4px; border: 3px solid #007bff; border-radius: 6px; text-align: right; font-weight: bold; font-size: 1.3em; flex-shrink: 0; }
-        .percent-toggle, .base-toggle { border: 2px solid #ccc; border-radius: 6px; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; background: #fff; flex-shrink: 0; font-size: 1.1em; }
+        
+        /* 基本の計算行 */
+        .row { display: flex; margin-bottom: 12px; padding: 12px; border: 1px solid #ccc; border-radius: 10px; background-color: #fff; gap: 8px; }
+
+        /* --- 【重要】スマホ用 縦に3段並べる設定 --- */
+        @media screen and (max-width: 800px) {
+            .row { flex-direction: column !important; align-items: stretch !important; }
+            .text-label-input { width: 100% !important; font-size: 1.1em; padding: 10px; margin-bottom: 5px; }
+            .calc-area { width: 100% !important; justify-content: center !important; padding: 10px 0; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; }
+            .result-area { width: 100% !important; justify-content: space-between !important; background: #eefbff; padding: 12px; border-radius: 8px; }
+            .result-text { font-size: 2.2em; }
+        }
+
+        /* PC用 横一列 */
+        @media screen and (min-width: 801px) {
+            .row { flex-direction: row; align-items: center; justify-content: space-between; }
+            .text-label-input { flex: 1.5; }
+            .calc-area { flex: 1; justify-content: center; }
+            .result-area { flex: 2; justify-content: flex-end; background: #f8f9fa; padding: 5px 10px; border-radius: 6px; }
+            .result-text { font-size: 1.6em; }
+        }
+
+        /* 共通パーツ */
+        .text-label-input { padding: 8px; border: 1px solid #bbb; border-radius: 6px; font-weight: bold; }
+        .calc-area { display: flex; align-items: center; gap: 8px; }
+        .multiplier-input { width: 110px; font-size: 1.5em; padding: 8px; text-align: right; border: 3px solid #007bff; border-radius: 6px; font-weight: bold; }
+        .result-area { display: flex; align-items: center; gap: 8px; }
+        .result-text { font-weight: bold; color: #007bff; }
+        
+        .operator-group { display: flex; flex-direction: column; align-items: center; width: 32px; }
+        .operator-control { font-size: 0.7em; background: #333; color: #fff; width: 100%; height: 20px; display: flex; justify-content: center; align-items: center; border-radius: 3px; cursor: pointer; }
+        .operator-display { font-size: 1.6em; font-weight: bold; text-align: center; color: #000; height: 35px; line-height: 35px; width: 100%; }
+        .percent-toggle, .base-toggle { border: 2px solid #ccc; border-radius: 6px; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; background: #fff; font-size: 1.3em; flex-shrink: 0; }
         .percent-toggle.active { background: #dc3545; color: #fff; border-color: #dc3545; }
-        .result-group { flex: 1.2; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: 120px; background: #f8f9fa; padding: 4px 8px; border-radius: 6px; border: 1px inset #eee; }
-        .result-text { font-size: 1.5em; font-weight: bold; color: #007bff; white-space: nowrap; }
-        .action-btn { border: none; background: none; cursor: pointer; font-size: 1.4em; padding: 0 2px; opacity: 0.7; }
+        .action-btn { border: none; background: none; cursor: pointer; font-size: 1.8em; opacity: 0.7; }
+
+        .master-row { padding: 12px; margin-bottom: 12px; border: 3px solid #dc3545; border-radius: 10px; background-color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .master-input { width: 45%; padding: 8px; border: 2px solid #dc3545; border-radius: 6px; font-size: 1.5em; text-align: right; font-weight: bold; }
+        
+        /* 最終合計エリア */
         .final-total-area { margin-top: 15px; padding: 20px; border: 3px solid #28a745; border-radius: 12px; background:#e6ffed; text-align: center; cursor: pointer; }
+        .copy-hint { font-size: 0.9em; color: #28a745; margin-top: 8px; font-weight: bold; background: #fff; border-radius: 20px; padding: 4px 12px; display: inline-block; border: 1px solid #28a745; }
+        
         .side-calc { flex: 1; min-width: 280px; background: #333; padding: 12px; border-radius: 10px; color: white; height: fit-content; position: sticky; top: 8px; }
-        .calc-display { width: 100%; height: 52px; background: #222; border: none; color: #fff; text-align: right; font-size: 1.8em; padding: 8px; border-radius: 6px; margin-bottom: 8px; }
+        .calc-display { width: 100%; height: 52px; background: #222; color: #fff; text-align: right; font-size: 1.8em; padding: 8px; border-radius: 6px; margin-bottom: 8px; border:none; }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .calc-btn { padding: 15px 5px; border: none; border-radius: 6px; cursor: pointer; font-size: 1.25em; font-weight: bold; background: #555; color: white; }
         .calc-btn.op { background: #f39c12; }
         .calc-btn.equal { background: #27ae60; grid-column: span 2; }
         .calc-btn.clear { background: #c0392b; }
+        .mode-button { flex: 1; padding: 12px; border: none; background: #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .mode-button.active { background-color: #007bff; color: white; }
+        .util-btn { border: none; background: #6c757d; color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85em; }
+        #saveMessage { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 25px; opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; }
         @media screen and (max-width: 900px) {
             .side-calc { display: none; position: fixed; bottom: 80px; right: 15px; z-index: 1000; width: 280px; }
             .side-calc.active { display: block; }
             .calc-toggle-btn { display: block !important; position: fixed; bottom: 15px; right: 15px; width: 60px; height: 60px; border-radius: 50%; background: #333; color: white; border: none; font-size: 28px; z-index: 1001; }
         }
-        .lang-button { background: #e9ecef; border: 1px solid #ccc; padding: 5px 6px; cursor: pointer; border-radius: 5px; font-size: 0.75em; min-width: 40px; font-weight: bold; }
-        .lang-button.active { background-color: #007bff; color: white; }
-        .util-btn { border: none; background: #6c757d; color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-weight: bold; }
-        .mode-button { flex: 1; padding: 12px; border: none; background: #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95em; }
-        .mode-button.active { background-color: #007bff; color: white; }
-        #saveMessage { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 25px; opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; font-size: 0.9em; }
     </style>
 </head>
 <body onload="init()">
@@ -60,12 +77,12 @@
 
     <div class="app-grid">
         <div class="calculator-container">
-            <div class="top-controls">
-                <div class="master-name-group">
-                    <label id="masterLabelName" style="font-size: 0.75em; color: #007bff; font-weight: bold; margin-right: 6px;">Name:</label>
-                    <input type="text" id="masterLabel" class="master-name-input" oninput="saveSettings()">
+            <div class="top-controls" style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px; flex-wrap: wrap; gap:8px;">
+                <div style="flex:1; display:flex; align-items:center; border:2px solid #007bff; border-radius:6px; padding:4px 8px; min-width:180px;">
+                    <span id="labelNameSpan" style="font-size:0.75em; color:#007bff; font-weight:bold; margin-right:5px;">Name:</span>
+                    <input type="text" id="masterLabel" style="border:none; outline:none; font-weight:bold; width:100%;" oninput="saveSettings()">
                 </div>
-                <div class="lang-switch" id="langContainer"></div>
+                <div id="langContainer" style="display:flex; gap:3px; flex-wrap: wrap;"></div>
             </div>
 
             <h2 id="title">Simple Sheet PRO</h2>
@@ -82,19 +99,13 @@
                 <button id="customSimpleBtn" class="mode-button" onclick="switchMode('customSimple')">Sequential</button>
             </div>
 
-            <div style="text-align: center; margin-bottom: 12px; display: flex; gap: 6px; justify-content: center;">
-                <select id="presetSelector" onchange="loadPreset()" style="padding: 10px; border-radius: 6px; border: 2px solid #ccc; width: 65%; font-size: 1em; font-weight: bold;">
-                </select>
-                <button class="lang-button" onclick="savePreset()" style="width:auto; padding:0 15px; font-weight: bold; font-size: 1em; background:#28a745; color:white; border:none;">Save</button>
-            </div>
-
             <div id="smart-sheet-mode">
                 <div class="master-row">
-                    <label id="masterLabelStart" class="master-label-start">Base Value</label>
+                    <label id="masterLabelStart" style="font-weight:bold; color:#dc3545;">Base Value</label>
                     <input type="number" id="masterInput" class="master-input" value="1000" oninput="updateDisplay()">
                 </div>
                 <div id="rows-container-smart"></div>
-                <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                <div style="text-align: center; margin-top: 15px; display: flex; gap: 8px;">
                     <button class="mode-button" id="addBtnInd" style="background:#28a745; color:white;" onclick="addRowSmart()">+ Row</button>
                     <button class="mode-button" id="copyBtnInd" style="background:#007bff; color:white;" onclick="copyPage('smart')">Copy All</button>
                 </div>
@@ -102,25 +113,26 @@
 
             <div id="custom-simple-mode" style="display: none;">
                 <div class="master-row">
-                    <label id="masterLabelStartSimple" class="master-label-start">Base Value</label>
+                    <label id="masterLabelStartSimple" style="font-weight:bold; color:#dc3545;">Base Value</label>
                     <input type="number" id="masterInputSimple" class="master-input" value="1000" oninput="updateDisplay()">
                 </div>
                 <div id="rows-container-simple"></div>
-                <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                <div style="text-align: center; margin-top: 15px; display: flex; gap: 8px;">
                     <button class="mode-button" id="addBtnSeq" style="background:#28a745; color:white;" onclick="addRowSimple()">+ Row</button>
                     <button class="mode-button" id="copyBtnSeq" style="background:#007bff; color:white;" onclick="copyPage('custom')">Copy All</button>
                 </div>
                 <div class="final-total-area" onclick="copyFinalResult()">
                     <div id="finalResultTextCustom" style="font-size: 2.8em; font-weight: bold; color: #28a745;">0</div>
+                    <div class="copy-hint" id="copyHint">Tap to Copy</div>
                 </div>
             </div>
         </div>
 
         <div id="sideCalc" class="side-calc">
-            <h3 id="ui-calcTitle" style="margin:0 0 10px; font-size: 1.1em;">Calculator</h3>
+            <h3 id="ui-calcTitle" style="margin:0 0 10px;">Calculator</h3>
             <div style="display:flex; gap:5px; margin-bottom:10px;">
                 <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
-                <button class="calc-btn" style="background:#007bff; height:52px; width:52px; padding:0;" onclick="copyCalcResult()">📋</button>
+                <button class="calc-btn" style="background:#007bff; width:52px;" onclick="copyCalcResult()">📋</button>
             </div>
             <div class="calc-buttons">
                 <button class="calc-btn clear" onclick="calcClear()">AC</button>
@@ -148,56 +160,61 @@
 
     <script>
         const languageMap = {
-            en: { title: "Simple Sheet PRO", modeInd: "Independent", modeSeq: "Sequential", masterLabelName: "Name:", masterLabelStart: "Base Value", copyMsg: "Copied!", btnClear: "Clear", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Reset all?", addRow: "+ Row", copyAll: "Copy All", calcTitle: "Calculator", promptPreset: "Preset name?", promptImport: "Paste code", load: "-- Load --" },
-            ja: { title: "シンプルシート PRO", modeInd: "独立計算", modeSeq: "連続計算", masterLabelName: "計算名:", masterLabelStart: "元の数字", copyMsg: "コピー完了", btnClear: "クリア", btnExport: "出力", btnImport: "読込", btnReset: "初期化", confirmReset: "全削除しますか？", addRow: "+ 行追加", copyAll: "全コピー", calcTitle: "電卓", promptPreset: "保存名を入力", promptImport: "コードを貼り付け", load: "-- 読込 --" },
-            zh: { title: "简单计算表 PRO", modeInd: "独立计算", modeSeq: "连续计算", masterLabelName: "名称:", masterLabelStart: "初始值", copyMsg: "已复制", btnClear: "清除", btnExport: "导出", btnImport: "导入", btnReset: "重置", confirmReset: "全部重置？", addRow: "+ 添加行", copyAll: "复制全部", calcTitle: "计算器", promptPreset: "名称？", promptImport: "粘贴代码", load: "-- 加载 --" },
-            ko: { title: "심플 시트 PRO", modeInd: "독립 계산", modeSeq: "연속 계산", masterLabelName: "이름:", masterLabelStart: "기준 숫자", copyMsg: "복사됨", btnClear: "지우기", btnExport: "내보내기", btnImport: "가져오기", btnReset: "초기화", confirmReset: "전체 초기화?", addRow: "+ 행 추가", copyAll: "전체 복사", calcTitle: "계산기", promptPreset: "이름?", promptImport: "코드 붙여넣기", load: "-- 로드 --" },
-            es: { title: "Hoja Simple PRO", modeInd: "Independiente", modeSeq: "Secuencial", masterLabelName: "Nombre:", masterLabelStart: "Valor Base", copyMsg: "¡Copiado!", btnClear: "Limpiar", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "¿Reiniciar todo?", addRow: "+ Fila", copyAll: "Todo", calcTitle: "Calculadora", promptPreset: "¿Nombre?", promptImport: "Pegar código", load: "-- Cargar --" },
-            fr: { title: "Feuille Simple PRO", modeInd: "Indépendant", modeSeq: "Séquentiel", masterLabelName: "Nom:", masterLabelStart: "Valeur base", copyMsg: "Copié !", btnClear: "Effacer", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Tout réinitialiser ?", addRow: "+ Ligne", copyAll: "Tout", calcTitle: "Calculatrice", promptPreset: "Nom ?", promptImport: "Coller le code", load: "-- Charger --" },
-            pt: { title: "Folha Simples PRO", modeInd: "Independente", modeSeq: "Sequencial", masterLabelName: "Nome:", masterLabelStart: "Valor Base", copyMsg: "Copiado!", btnClear: "Limpar", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Reset total?", addRow: "+ Linha", copyAll: "Tudo", calcTitle: "Calculadora", promptPreset: "Nome?", promptImport: "Colar código", load: "-- Carregar --" }
+            en: { title: "Simple Sheet PRO", modeInd: "Independent", modeSeq: "Sequential", masterLabelName: "Name:", masterLabelStart: "Base Value", copyMsg: "Copied!", btnClear: "Clear", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Reset all?", addRow: "+ Row", copyAll: "Copy All", calcTitle: "Calculator", copyHint: "Tap to Copy" },
+            ja: { title: "シンプルシート PRO", modeInd: "独立計算", modeSeq: "連続計算", masterLabelName: "計算名:", masterLabelStart: "元の数字", copyMsg: "コピー完了", btnClear: "クリア", btnExport: "出力", btnImport: "読込", btnReset: "初期化", confirmReset: "全削除しますか？", addRow: "+ 行追加", copyAll: "全コピー", calcTitle: "電卓", copyHint: "タップでコピー" },
+            zh: { title: "简单计算表 PRO", modeInd: "独立计算", modeSeq: "连续计算", masterLabelName: "名称:", masterLabelStart: "初始值", copyMsg: "已复制", btnClear: "清除", btnExport: "导出", btnImport: "导入", btnReset: "重置", confirmReset: "全部重置？", addRow: "+ 添加行", copyAll: "复制全部", calcTitle: "计算器", copyHint: "点击复制" },
+            ko: { title: "심플 시트 PRO", modeInd: "독립 계산", modeSeq: "연속 계산", masterLabelName: "이름:", masterLabelStart: "기준 숫자", copyMsg: "복사됨", btnClear: "지우기", btnExport: "내보내기", btnImport: "가져오기", btnReset: "초기화", confirmReset: "전체 초기화?", addRow: "+ 행 추가", copyAll: "전체 복사", calcTitle: "계산기", copyHint: "탭하여 복사" },
+            es: { title: "Hoja Simple PRO", modeInd: "Independiente", modeSeq: "Secuencial", masterLabelName: "Nombre:", masterLabelStart: "Valor Base", copyMsg: "¡Copiado!", btnClear: "Limpiar", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "¿Reiniciar todo?", addRow: "+ Fila", copyAll: "Todo", calcTitle: "Calculadora", copyHint: "Tocar para copiar" },
+            fr: { title: "Feuille Simple PRO", modeInd: "Indépendant", modeSeq: "Séquentiel", masterLabelName: "Nom:", masterLabelStart: "Valeur base", copyMsg: "Copié !", btnClear: "Effacer", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Tout réinitialiser ?", addRow: "+ Ligne", copyAll: "Tout", calcTitle: "Calculatrice", copyHint: "Appuyer pour copier" },
+            pt: { title: "Folha Simples PRO", modeInd: "Independente", modeSeq: "Sequencial", masterLabelName: "Nome:", masterLabelStart: "Valor Base", copyMsg: "Copiado!", btnClear: "Limpar", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Reset total?", addRow: "+ Linha", copyAll: "Tudo", calcTitle: "Calculadora", copyHint: "Toque para copiar" }
         };
 
-        let currentLanguage = 'ja';
+        let currentLanguage = 'en'; // スタート言語を英語に設定
         let currentCalc = "0";
 
         function init() {
             const langCont = document.getElementById('langContainer');
             Object.keys(languageMap).forEach(lang => {
                 const btn = document.createElement('button');
-                btn.className = 'lang-button'; btn.id = 'lang-' + lang; btn.textContent = lang.toUpperCase();
+                btn.style.cssText = "padding:4px 6px; font-size:11px; cursor:pointer; border:1px solid #ccc; border-radius:4px; background:#f8f9fa; font-weight:bold;";
+                btn.textContent = lang.toUpperCase();
                 btn.onclick = () => setLanguage(lang);
                 langCont.appendChild(btn);
             });
+
             const s = JSON.parse(localStorage.getItem('simpleSheetSettings')||'{}');
             document.getElementById('masterLabel').value = s.masterLabel||'';
             document.getElementById('masterInput').value = s.masterInput||1000;
             document.getElementById('masterInputSimple').value = s.masterInputSimple||1000;
             if(s.smartRows && s.smartRows.length) s.smartRows.forEach(r=>addRowSmart(r)); else addRowSmart();
             if(s.simpleRows && s.simpleRows.length) s.simpleRows.forEach(r=>addRowSimple(r)); else addRowSimple();
-            setLanguage(localStorage.getItem('simpleSheetLang') || 'ja'); 
-            switchMode('smartSheet');
+            
+            // 保存された言語があればそれを使い、なければ英語
+            const savedLang = localStorage.getItem('simpleSheetLang');
+            setLanguage(savedLang || 'en'); 
         }
 
         function setLanguage(lang) {
-            currentLanguage = lang; localStorage.setItem('simpleSheetLang', lang);
+            currentLanguage = lang; 
+            localStorage.setItem('simpleSheetLang', lang);
             const d = languageMap[lang];
-            document.querySelectorAll('.lang-button').forEach(b => b.classList.toggle('active', b.id === 'lang-'+lang));
             document.getElementById('title').textContent = d.title;
             document.getElementById('smartSheetBtn').textContent = d.modeInd;
             document.getElementById('customSimpleBtn').textContent = d.modeSeq;
-            document.getElementById('masterLabelName').textContent = d.masterLabelName;
+            document.getElementById('labelNameSpan').textContent = d.masterLabelName;
             document.getElementById('masterLabelStart').textContent = d.masterLabelStart;
             document.getElementById('masterLabelStartSimple').textContent = d.masterLabelStart;
-            document.getElementById('btnClear').innerHTML = `🧹 ${d.btnClear}`;
-            document.getElementById('btnExport').innerHTML = `📤 ${d.btnExport}`;
-            document.getElementById('btnImport').innerHTML = `📥 ${d.btnImport}`;
-            document.getElementById('btnReset').innerHTML = `🔄 ${d.btnReset}`;
+            document.getElementById('btnClear').textContent = d.btnClear;
+            document.getElementById('btnExport').textContent = d.btnExport;
+            document.getElementById('btnImport').textContent = d.btnImport;
+            document.getElementById('btnReset').textContent = d.btnReset;
             document.getElementById('addBtnInd').textContent = d.addRow;
             document.getElementById('addBtnSeq').textContent = d.addRow;
             document.getElementById('copyBtnInd').textContent = d.copyAll;
             document.getElementById('copyBtnSeq').textContent = d.copyAll;
+            document.getElementById('copyHint').textContent = d.copyHint;
             document.getElementById('ui-calcTitle').textContent = d.calcTitle;
-            updatePresetList(); updateDisplay();
+            updateDisplay();
         }
 
         function updateDisplay() {
@@ -225,11 +242,17 @@
         function addRowSmart(s=null) {
             const id = s ? s.id : Math.random().toString(36).substr(2, 5);
             const div = document.createElement('div'); div.className='row'; div.dataset.id=id;
-            div.innerHTML = `<input type="text" class="text-label-input" value="${s?s.label:''}" oninput="saveSettings()">
-                <div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','smart',1)">▲</div><div class="operator-display" id="smart-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','smart',-1)">▼</div></div>
-                <input type="number" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()">
-                <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
-                <div class="result-group"><div class="result-text">0</div><div><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div></div>`;
+            div.innerHTML = `
+                <input type="text" class="text-label-input" placeholder="Label" value="${s?s.label:''}" oninput="saveSettings()">
+                <div class="calc-area">
+                    <div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','smart',1)">▲</div><div class="operator-display" id="smart-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','smart',-1)">▼</div></div>
+                    <input type="number" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()">
+                    <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
+                </div>
+                <div class="result-area">
+                    <div class="result-text">0</div>
+                    <div style="display:flex; gap:10px;"><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div>
+                </div>`;
             document.getElementById('rows-container-smart').appendChild(div); updateDisplay();
         }
 
@@ -237,18 +260,24 @@
             const id = s ? s.id : Math.random().toString(36).substr(2, 5);
             const div = document.createElement('div'); div.className='row'; div.dataset.id=id;
             const isChain = s ? s.baseMode==='chain' : true;
-            div.innerHTML = `<input type="text" class="text-label-input" value="${s?s.label:''}" oninput="saveSettings()">
-                <div id="simple-base-${id}" class="base-toggle ${isChain?'chain':''}" onclick="this.classList.toggle('chain');this.textContent=this.classList.contains('chain')?'🔗':'🏠';updateDisplay()">${isChain?'🔗':'🏠'}</div>
-                <div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','simple',1)">▲</div><div class="operator-display" id="simple-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','simple',-1)">▼</div></div>
-                <input type="number" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()">
-                <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
-                <div class="result-group"><div class="result-text">0</div><div><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div></div>`;
+            div.innerHTML = `
+                <input type="text" class="text-label-input" placeholder="Label" value="${s?s.label:''}" oninput="saveSettings()">
+                <div class="calc-area">
+                    <div id="simple-base-${id}" class="base-toggle ${isChain?'chain':''}" onclick="this.classList.toggle('chain');this.textContent=this.classList.contains('chain')?'🔗':'🏠';updateDisplay()">${isChain?'🔗':'🏠'}</div>
+                    <div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','simple',1)">▲</div><div class="operator-display" id="simple-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','simple',-1)">▼</div></div>
+                    <input type="number" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()">
+                    <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
+                </div>
+                <div class="result-area">
+                    <div class="result-text">0</div>
+                    <div style="display:flex; gap:10px;"><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div>
+                </div>`;
             document.getElementById('rows-container-simple').appendChild(div); updateDisplay();
         }
 
         function changeOp(id,m,d){ const ops=['+','-','×','÷']; const el=document.getElementById(m+'-op-'+id); el.textContent=ops[(ops.indexOf(el.textContent)+d+4)%4]; updateDisplay(); }
-        function switchMode(m){ document.getElementById('smart-sheet-mode').style.display=m==='smartSheet'?'block':'none'; document.getElementById('custom-simple-mode').style.display=m==='customSimple'?'block':'none'; document.getElementById('smartSheetBtn').classList.toggle('active',m==='smartSheet'); document.getElementById('customSimpleBtn').classList.toggle('active',m==='customSimple'); updatePresetList(); }
-        function copyRowVal(btn){ navigator.clipboard.writeText(btn.closest('.result-group').querySelector('.result-text').textContent.replace(/,/g,'')); showMsg(languageMap[currentLanguage].copyMsg); }
+        function switchMode(m){ document.getElementById('smart-sheet-mode').style.display=m==='smartSheet'?'block':'none'; document.getElementById('custom-simple-mode').style.display=m==='customSimple'?'block':'none'; document.getElementById('smartSheetBtn').classList.toggle('active',m==='smartSheet'); document.getElementById('customSimpleBtn').classList.toggle('active',m==='customSimple'); }
+        function copyRowVal(btn){ navigator.clipboard.writeText(btn.closest('.result-area').querySelector('.result-text').textContent.replace(/,/g,'')); showMsg(languageMap[currentLanguage].copyMsg); }
         function copyFinalResult() { navigator.clipboard.writeText(document.getElementById('finalResultTextCustom').textContent.replace(/,/g, '')); showMsg(languageMap[currentLanguage].copyMsg); }
         function copyPage(m){ 
             let t = `【${document.getElementById('masterLabel').value || 'Sheet'}】\n`;
@@ -258,70 +287,22 @@
                 const val = r.querySelector('.result-text').textContent.replace(/,/g,'');
                 t += `${label}\t${val}\n`; 
             });
-            if(m === 'custom') t += `TOTAL\t${document.getElementById('finalResultTextCustom').textContent.replace(/,/g,'')}\n`;
             navigator.clipboard.writeText(t); showMsg(languageMap[currentLanguage].copyMsg);
         }
-
         function saveSettings(){
             const s = { masterLabel: document.getElementById('masterLabel').value, masterInput: document.getElementById('masterInput').value, masterInputSimple: document.getElementById('masterInputSimple').value, smartRows: Array.from(document.querySelectorAll('#rows-container-smart .row')).map(r=>({id:r.dataset.id, label:r.querySelector('.text-label-input').value, multiplier:r.querySelector('.multiplier-input').value, operator:document.getElementById('smart-op-'+r.dataset.id).textContent, isPercentActive:r.querySelector('.percent-toggle').classList.contains('active')})), simpleRows: Array.from(document.querySelectorAll('#rows-container-simple .row')).map(r=>({id:r.dataset.id, label:r.querySelector('.text-label-input').value, multiplier:r.querySelector('.multiplier-input').value, operator:document.getElementById('simple-op-'+r.dataset.id).textContent, isPercentActive:r.querySelector('.percent-toggle').classList.contains('active'), baseMode:document.getElementById('simple-base-'+r.dataset.id).classList.contains('chain')?'chain':'master'})) };
             localStorage.setItem('simpleSheetSettings', JSON.stringify(s));
         }
-        function savePreset() {
-            const name = prompt(languageMap[currentLanguage].promptPreset); if(!name) return;
-            const mode = document.getElementById('smart-sheet-mode').style.display !== 'none' ? 'Smart' : 'Custom';
-            const p = JSON.parse(localStorage.getItem('simpleSheetPresets_' + mode) || '{}');
-            p[name] = JSON.parse(localStorage.getItem('simpleSheetSettings'));
-            localStorage.setItem('simpleSheetPresets_' + mode, JSON.stringify(p));
-            updatePresetList(); showMsg(languageMap[currentLanguage].copyMsg);
-        }
-        function loadPreset() {
-            const name = document.getElementById('presetSelector').value; if(!name) return;
-            const mode = document.getElementById('smart-sheet-mode').style.display !== 'none' ? 'Smart' : 'Custom';
-            const p = JSON.parse(localStorage.getItem('simpleSheetPresets_' + mode) || '{}');
-            localStorage.setItem('simpleSheetSettings', JSON.stringify(p[name]));
-            location.reload();
-        }
-        function updatePresetList() {
-            const mode = document.getElementById('smart-sheet-mode').style.display !== 'none' ? 'Smart' : 'Custom', sel = document.getElementById('presetSelector'), p = JSON.parse(localStorage.getItem('simpleSheetPresets_' + mode) || '{}');
-            sel.innerHTML = `<option value="">${languageMap[currentLanguage].load}</option>`;
-            Object.keys(p).forEach(k => { const opt = document.createElement('option'); opt.value = k; opt.textContent = k; sel.appendChild(opt); });
-        }
-        function exportData() {
-            const d = { settings: JSON.parse(localStorage.getItem('simpleSheetSettings')||'{}'), presetsSmart: JSON.parse(localStorage.getItem('simpleSheetPresets_Smart')||'{}'), presetsCustom: JSON.parse(localStorage.getItem('simpleSheetPresets_Custom')||'{}') };
-            navigator.clipboard.writeText(btoa(unescape(encodeURIComponent(JSON.stringify(d))))); showMsg(languageMap[currentLanguage].copyMsg);
-        }
-        function importData() {
-            const str = prompt(languageMap[currentLanguage].promptImport); if(!str) return;
-            try {
-                const d = JSON.parse(decodeURIComponent(escape(atob(str))));
-                if(d.settings) localStorage.setItem('simpleSheetSettings', JSON.stringify(d.settings));
-                if(d.presetsSmart) localStorage.setItem('simpleSheetPresets_Smart', JSON.stringify(d.presetsSmart));
-                if(d.presetsCustom) localStorage.setItem('simpleSheetPresets_Custom', JSON.stringify(d.presetsCustom));
-                location.reload();
-            } catch(e) { alert("Error"); }
-        }
-
-        function calcInput(v) { 
-            if(v==='%'){ 
-                try { let res = eval(currentCalc.replace(/×/g, '*').replace(/÷/g, '/')); currentCalc = (res / 100).toString(); } catch(e) { currentCalc = "0"; }
-            } else if(currentCalc==="0" && v!==".") { currentCalc = v; } else { currentCalc += v; }
-            document.getElementById('calcDisplay').value = currentCalc; 
-        }
-        function calcClear() { currentCalc="0"; document.getElementById('calcDisplay').value = "0"; }
-        function calcResult() { 
-            try { 
-                let res = eval(currentCalc.replace(/×/g, '*').replace(/÷/g, '/'));
-                currentCalc = Number.isInteger(res) ? res.toString() : parseFloat(res.toFixed(8)).toString();
-            } catch(e) { currentCalc="Error"; } 
-            document.getElementById('calcDisplay').value = currentCalc; 
-        }
+        function calcInput(v) { if(currentCalc==="0" && v!==".") currentCalc=v; else currentCalc+=v; document.getElementById('calcDisplay').value=currentCalc; }
+        function calcClear() { currentCalc="0"; document.getElementById('calcDisplay').value="0"; }
+        function calcResult() { try { currentCalc = eval(currentCalc.replace(/×/g, '*').replace(/÷/g, '/')).toString(); } catch(e) { currentCalc="Error"; } document.getElementById('calcDisplay').value=currentCalc; }
         function copyCalcResult() { navigator.clipboard.writeText(document.getElementById('calcDisplay').value); showMsg(languageMap[currentLanguage].copyMsg); }
         function toggleCalc() { document.getElementById('sideCalc').classList.toggle('active'); }
         function clearNumbers(){ document.getElementById('masterInput').value=0; document.getElementById('masterInputSimple').value=0; document.querySelectorAll('.multiplier-input').forEach(i=>i.value=0); updateDisplay(); }
         function fullReset(){ if(confirm(languageMap[currentLanguage].confirmReset)){ localStorage.clear(); location.reload(); } }
         function showMsg(t){ const m=document.getElementById('saveMessage'); m.textContent=t; m.style.opacity=1; setTimeout(()=>m.style.opacity=0, 1500); }
-
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        function exportData() { navigator.clipboard.writeText(btoa(JSON.stringify(localStorage))); showMsg("Exported!"); }
+        function importData() { const str = prompt("Paste code:"); if(str) { try{const d = JSON.parse(atob(str)); Object.keys(d).forEach(k=>localStorage.setItem(k, d[k])); location.reload();}catch(e){alert("Error");} } }
     </script>
 </body>
 </html>
