@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,28 +7,57 @@
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    
-    <link rel="icon" href="favicon-96x96.png" sizes="96x96" type="image/png">
-    <link rel="icon" href="web-app-manifest-192x192.png" sizes="192x192" type="image/png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="theme-color" content="#4db8ff">
 
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="icon" href="favicon-96x96.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 8px; background-color: #f0f2f5; margin: 0; box-sizing: border-box; font-size: 16px; -webkit-text-size-adjust: 100%; color: #000; }
+        /* --- 基本設定 --- */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            padding: 8px; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            color: #000; 
+        }
         * { box-sizing: border-box; }
-        .app-grid { display: flex; gap: 12px; max-width: 1400px; margin: 0 auto; }
-        .calculator-container { flex: 3; min-width: 0; background-color: #fff; padding: 12px; border-radius: 10px; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1); width: 100%; }
-        .row { display: flex; margin-bottom: 12px; padding: 12px; border: 1px solid #ccc; border-radius: 10px; background-color: #fff; gap: 8px; }
-        
-        @media screen and (max-width: 800px) {
-            .row { flex-direction: column !important; align-items: stretch !important; }
-            .text-label-input { width: 100% !important; font-size: 1.1em; padding: 10px; margin-bottom: 5px; }
-            .calc-area { width: 100% !important; justify-content: center !important; padding: 10px 0; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; }
-            .result-area { width: 100% !important; justify-content: space-between !important; background: #eefbff; padding: 12px; border-radius: 8px; }
-            .result-text { font-size: 2.2em; }
+
+        /* --- レイアウト --- */
+        .app-grid { 
+            display: flex; 
+            gap: 12px; 
+            max-width: 1400px; 
+            margin: 0 auto; 
         }
         
+        /* --- メインパネル --- */
+        .calculator-container { 
+            flex: 3; 
+            min-width: 0; 
+            background-color: #fff; 
+            padding: 12px; 
+            border-radius: 10px; 
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1); 
+            width: 100%; 
+        }
+
+        /* --- 行（Row）のデザイン --- */
+        .row { 
+            display: flex; 
+            margin-bottom: 12px; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            background-color: #fff; 
+            gap: 8px; 
+        }
+        
+        /* レスポンシブ対応: PC/タブレット */
         @media screen and (min-width: 801px) {
             .row { flex-direction: row; align-items: center; justify-content: space-between; }
             .text-label-input { flex: 1.5; }
@@ -37,53 +66,286 @@
             .result-text { font-size: 1.6em; }
         }
 
-        .text-label-input { padding: 8px; border: 2px solid #000; border-radius: 6px; font-weight: bold; color: #000; outline: none; }
+        /* レスポンシブ対応: スマホ */
+        @media screen and (max-width: 800px) {
+            .row { flex-direction: column !important; align-items: stretch !important; }
+            .text-label-input { width: 100% !important; font-size: 1.1em; padding: 10px; margin-bottom: 5px; }
+            .calc-area { width: 100% !important; justify-content: center !important; padding: 10px 0; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; }
+            .result-area { width: 100% !important; justify-content: space-between !important; background: #eefbff; padding: 12px; border-radius: 8px; }
+            .result-text { font-size: 2.2em; }
+        }
+
+        /* --- 入力パーツ --- */
+        .text-label-input { 
+            padding: 8px; 
+            border: 2px solid #000; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            color: #000; 
+            outline: none; 
+        }
         .calc-area { display: flex; align-items: center; gap: 8px; }
-        .multiplier-input { width: 110px; font-size: 1.5em; padding: 8px; text-align: right; border: 3px solid #007bff; border-radius: 6px; font-weight: bold; color: #000; outline: none; }
+        
+        .multiplier-input { 
+            width: 110px; 
+            font-size: 1.5em; 
+            padding: 8px; 
+            text-align: right; 
+            border: 3px solid #007bff; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            color: #000; 
+            outline: none; 
+        }
+        /* プレースホルダーの色を少し薄くする */
+        .multiplier-input::placeholder, .master-input::placeholder {
+            color: #ccc;
+            font-weight: normal;
+        }
+        
         .result-text { font-weight: bold; color: #007bff; }
+
+        /* --- 演算子コントロール --- */
         .operator-group { display: flex; flex-direction: column; align-items: center; width: 32px; }
-        .operator-control { font-size: 0.7em; background: #333; color: #fff; width: 100%; height: 20px; display: flex; justify-content: center; align-items: center; border-radius: 3px; cursor: pointer; }
-        .operator-display { font-size: 1.6em; font-weight: bold; text-align: center; color: #000; height: 35px; line-height: 35px; width: 100%; }
-        .percent-toggle, .base-toggle { border: 2px solid #ccc; border-radius: 6px; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; background: #fff; font-size: 1.3em; flex-shrink: 0; color: #000; }
+        .operator-control { 
+            font-size: 0.7em; 
+            background: #333; 
+            color: #fff; 
+            width: 100%; 
+            height: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        .operator-display { 
+            font-size: 1.6em; 
+            font-weight: bold; 
+            text-align: center; 
+            color: #000; 
+            height: 35px; 
+            line-height: 35px; 
+            width: 100%; 
+        }
+
+        /* --- トグルボタン --- */
+        .percent-toggle, .base-toggle { 
+            border: 2px solid #ccc; 
+            border-radius: 6px; 
+            width: 50px; 
+            height: 50px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            background: #fff; 
+            font-size: 1.3em; 
+            flex-shrink: 0; 
+            color: #000; 
+            user-select: none; 
+        }
         .percent-toggle.active { background: #dc3545; color: #fff; border-color: #dc3545; }
         .base-toggle.chain { background: #007bff; color: #fff; border-color: #007bff; }
-        .action-btn { border: none; background: none; cursor: pointer; font-size: 1.8em; opacity: 0.7; }
-        .master-row { padding: 12px; margin-bottom: 12px; border: 3px solid #dc3545; border-radius: 10px; background-color: #fff; display: flex; align-items: center; justify-content: space-between; }
-        .master-input { width: 45%; padding: 8px; border: 2px solid #dc3545; border-radius: 6px; font-size: 1.5em; text-align: right; font-weight: bold; color: #000; outline: none; }
-        .storage-bar { background: #dee2e6; border: 2px solid #666; border-radius: 10px; padding: 10px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+        .action-btn { border: none; background: none; cursor: pointer; font-size: 1.8em; opacity: 0.7; padding: 5px; }
+
+        /* --- 最上部 マスター行 --- */
+        .master-row { 
+            padding: 12px; 
+            margin-bottom: 12px; 
+            border: 3px solid #dc3545; 
+            border-radius: 10px; 
+            background-color: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        .master-input { 
+            width: 45%; 
+            padding: 8px; 
+            border: 2px solid #dc3545; 
+            border-radius: 6px; 
+            font-size: 1.5em; 
+            text-align: right; 
+            font-weight: bold; 
+            color: #000; 
+            outline: none; 
+        }
+
+        /* --- 保存/メモリバー --- */
+        .storage-bar { 
+            background: #dee2e6; 
+            border: 2px solid #666; 
+            border-radius: 10px; 
+            padding: 10px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
         .storage-controls { display: flex; align-items: center; gap: 10px; }
         .save-btn-main { background: #e67e22; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; }
         .edit-toggle-btn { background: #6c757d; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8em; }
         .edit-toggle-btn.active { background: #dc3545; }
+
+        /* 保存リスト（横スクロール） */
         .save-list-container { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; min-height: 45px; }
-        .save-chip { background: #fff; border: 2px solid #007bff; color: #000; padding: 6px 14px; border-radius: 20px; font-size: 0.85em; font-weight: bold; white-space: nowrap; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+        .save-chip { 
+            background: #fff; 
+            border: 2px solid #007bff; 
+            color: #000; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            white-space: nowrap; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            cursor: pointer; 
+            user-select: none; 
+        }
         .save-chip .del-icon { display: none; color: #dc3545; font-size: 1.3em; }
         .editing .save-chip { border-style: dashed; opacity: 0.8; }
         .editing .save-chip .del-icon { display: inline; }
-        .side-calc { flex: 1; min-width: 280px; background: #333; padding: 12px; border-radius: 10px; color: white; height: fit-content; position: sticky; top: 8px; }
-        .calc-display { width: 100%; height: 52px; background: #222; color: #fff; text-align: right; font-size: 1.8em; padding: 8px; border-radius: 6px; margin-bottom: 8px; border:none; outline:none; }
+
+        /* --- サイド電卓 --- */
+        .side-calc { 
+            flex: 1; 
+            min-width: 280px; 
+            background: #333; 
+            padding: 12px; 
+            border-radius: 10px; 
+            color: white; 
+            height: fit-content; 
+            position: sticky; 
+            top: 8px; 
+        }
+        .calc-display { 
+            width: 100%; 
+            height: 52px; 
+            background: #222; 
+            color: #fff; 
+            text-align: right; 
+            font-size: 1.8em; 
+            padding: 8px; 
+            border-radius: 6px; 
+            margin-bottom: 8px; 
+            border: none; 
+            outline: none; 
+        }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .calc-btn { padding: 15px 5px; border: none; border-radius: 6px; cursor: pointer; font-size: 1.25em; font-weight: bold; background: #555; color: white; }
+        .calc-btn { 
+            padding: 15px 5px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1.25em; 
+            font-weight: bold; 
+            background: #555; 
+            color: white; 
+        }
         .calc-btn.op { background: #f39c12; }
         .calc-btn.equal { background: #27ae60; grid-column: span 2; }
         .calc-btn.clear { background: #c0392b; }
-        .mode-button { flex: 1; padding: 12px 8px; border: none; background: #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; min-height: 85px; color: #000; }
+
+        /* モバイル用電卓スタイル */
+        @media screen and (max-width: 900px) {
+            .side-calc { 
+                display: none; 
+                position: fixed; 
+                bottom: 80px; 
+                right: 15px; 
+                z-index: 1000; 
+                width: 280px; 
+                box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            }
+            .side-calc.active { display: block; }
+        }
+
+        /* --- モード切替ボタン --- */
+        .mode-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
+        .mode-button { 
+            flex: 1; 
+            padding: 12px 8px; 
+            border: none; 
+            background: #ddd; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 85px; 
+            color: #000; 
+            transition: 0.2s; 
+        }
         .mode-button.active { background-color: #007bff; color: white; }
         .mode-desc { font-size: 0.7em; margin-top: 6px; opacity: 0.9; font-weight: normal; line-height: 1.3; text-align: center; }
+
+        /* --- ユーティリティボタン --- */
         .util-btn { border: none; background: #6c757d; color: white; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-weight: bold; }
-        #saveMessage { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 10px 20px; border-radius: 25px; opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; font-weight: bold; }
         
+        /* --- 通知メッセージ --- */
+        #saveMessage { 
+            position: fixed; 
+            top: 15px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: #000; 
+            color: #fff; 
+            padding: 12px 25px; 
+            border-radius: 25px; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            z-index: 2000; 
+            pointer-events: none; 
+            font-weight: bold; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+        }
+
+        /* --- モバイル用電卓起動ボタン --- */
+        .calc-toggle-btn { 
+            display: none; 
+            position: fixed; 
+            bottom: 15px; 
+            right: 15px; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: #333; 
+            color: white; 
+            border: none; 
+            font-size: 28px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+            z-index: 1001; 
+            cursor: pointer;
+        }
         @media screen and (max-width: 900px) {
-            .side-calc { display: none; position: fixed; bottom: 80px; right: 15px; z-index: 1000; width: 280px; }
-            .side-calc.active { display: block; }
-            .calc-toggle-btn { display: block !important; position: fixed; bottom: 15px; right: 15px; width: 60px; height: 60px; border-radius: 50%; background: #333; color: white; border: none; font-size: 28px; z-index: 1001; }
+            .calc-toggle-btn { display: block; }
+        }
+
+        /* --- モバイル用電卓閉じるボタン --- */
+        .mobile-calc-close {
+            display: none;
+            background: none; 
+            border: none; 
+            color: white; 
+            font-size: 1.5em; 
+            cursor: pointer;
+        }
+        @media screen and (max-width: 900px) {
+            .mobile-calc-close { display: block; }
         }
     </style>
 </head>
 <body onload="init()">
 
     <div id="saveMessage"></div>
-    <button class="calc-toggle-btn" style="display:none;" onclick="toggleCalc()">🧮</button>
+    
+    <button class="calc-toggle-btn" onclick="toggleCalc()">🧮</button>
 
     <div class="app-grid">
         <div class="calculator-container">
@@ -112,8 +374,8 @@
                 <button class="util-btn" style="background:#dc3545;" onclick="fullReset()">🔄 <span id="btnReset">Reset</span></button>
             </div>
 
-            <div class="mode-toggle" style="display:flex; gap:8px; margin-bottom:12px;">
-                <button id="smartSheetBtn" class="mode-button" onclick="switchMode('smartSheet')">
+            <div class="mode-toggle">
+                <button id="smartSheetBtn" class="mode-button active" onclick="switchMode('smartSheet')">
                     <span id="txtModeBase">From Base</span>
                     <span id="descModeBase" class="mode-desc"></span>
                 </button>
@@ -126,7 +388,7 @@
             <div id="smart-sheet-mode">
                 <div class="master-row">
                     <label id="masterLabelStart" style="font-weight:bold; color:#dc3545;">Base Value</label>
-                    <input type="number" id="masterInput" class="master-input" step="any" value="1000" oninput="updateDisplay()">
+                    <input type="number" id="masterInput" class="master-input" step="any" placeholder="1000" oninput="updateDisplay()">
                 </div>
                 <div id="rows-container-smart"></div>
                 <div style="text-align: center; margin-top: 15px; display: flex; gap: 8px;">
@@ -138,7 +400,7 @@
             <div id="custom-simple-mode" style="display: none;">
                 <div class="master-row">
                     <label id="masterLabelStartSimple" style="font-weight:bold; color:#dc3545;">Base Value</label>
-                    <input type="number" id="masterInputSimple" class="master-input" step="any" value="1000" oninput="updateDisplay()">
+                    <input type="number" id="masterInputSimple" class="master-input" step="any" placeholder="1000" oninput="updateDisplay()">
                 </div>
                 <div id="rows-container-simple"></div>
                 <div style="text-align: center; margin-top: 15px; display: flex; gap: 8px;">
@@ -149,7 +411,11 @@
         </div>
 
         <div id="sideCalc" class="side-calc">
-            <h3 id="ui-calcTitle" style="margin:0 0 10px;">Calculator</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 id="ui-calcTitle" style="margin:0;">Calculator</h3>
+                <button class="mobile-calc-close" onclick="toggleCalc()">×</button>
+            </div>
+            
             <div style="display:flex; gap:5px; margin-bottom:10px;">
                 <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
                 <button class="calc-btn" style="background:#007bff; width:52px;" onclick="copyCalcResult()">📋</button>
@@ -179,6 +445,7 @@
     </div>
 
     <script>
+        // --- 言語定義 ---
         const languageMap = {
             en: { title: "Simple Sheet PRO", modeBase: "From Base", descBase: "Fixed: Every row refers to the top value", modePrev: "Flow", descPrev: "Evaluated from top to bottom. Choose 🏠 or 🔗 for each row.", masterLabelName: "Name:", masterLabelStart: "Base Value", rowLabel: "Label", copyMsg: "Copied!", btnClear: "Clear", btnExport: "Exp", btnImport: "Imp", btnReset: "Reset", confirmReset: "Reset all?", addRow: "+ Row", copyAll: "Copy All", calcTitle: "Calculator", btnSave: "Save", msgSave: "Saved!", msgLoad: "Loaded!", confirmDel: "Delete this memory?", btnEdit: "Edit", btnDone: "Done" },
             ja: { title: "Simple Sheet PRO", modeBase: "元の値から", descBase: "固定参照：すべての行が一番上の数値を参照します", modePrev: "フロー計算", descPrev: "上から順に計算。各行で 🏠 または 🔗 を選択可能。", masterLabelName: "計算名:", masterLabelStart: "元の数字", rowLabel: "項目名", copyMsg: "コピー完了", btnClear: "クリア", btnExport: "出力", btnImport: "読込", btnReset: "初期化", confirmReset: "全削除しますか？", addRow: "+ 行追加", copyAll: "全コピー", calcTitle: "電卓", btnSave: "記憶する", msgSave: "記憶しました", msgLoad: "読み込みました", confirmDel: "この記憶を削除しますか？", btnEdit: "編集", btnDone: "完了" },
@@ -188,14 +455,16 @@
             fr: { title: "Simple Sheet PRO", modeBase: "Depuis Base", descBase: "Référence fixe : chaque ligne se réfère à la valeur initiale du haut", modePrev: "Flux", descPrev: "Évalué de haut en bas. Choisissez 🏠 ou 🔗 pour chaque ligne.", masterLabelName: "Nom :", masterLabelStart: "Valeur de base", rowLabel: "Libellé", copyMsg: "Copié !", btnClear: "Effacer", btnExport: "Export", btnImport: "Import", btnReset: "Reset", confirmReset: "Tout réinitialiser ?", addRow: "+ Ligne", copyAll: "Tout copier", calcTitle: "Calculatrice", btnSave: "Enregistrer", msgSave: "Enregistré", msgLoad: "Chargé", confirmDel: "Supprimer?", btnEdit: "Modifier", btnDone: "Terminé" },
             pt: { title: "Simple Sheet PRO", modeBase: "Da Base", descBase: "Referência fixa: cada linha refere-se ao valor inicial no topo", modePrev: "Fluxo", descPrev: "Avaliado de cima para baixo. Escolha 🏠 ou 🔗 para cada linha.", masterLabelName: "Nome:", masterLabelStart: "Valor Base", rowLabel: "Rótulo", copyMsg: "Copiado!", btnClear: "Limpiar", btnExport: "Exportar", btnImport: "Importar", btnReset: "Reset", confirmReset: "Reiniciar tudo?", addRow: "+ Linha", copyAll: "Copiar tudo", calcTitle: "Calculadora", btnSave: "Salvar", msgSave: "Salvo", msgLoad: "Carregado", confirmDel: "Excluir?", btnEdit: "Editar", btnDone: "Concluir" },
             de: { title: "Simple Sheet PRO", modeBase: "Vom Basiswert", descBase: "Feste Referenz: Jede Zeile bezieht sich auf den obersten Basiswert", modePrev: "Flow", descPrev: "Berechnung von oben nach unten. Wählen Sie 🏠 oder 🔗 für jede Zeile.", masterLabelName: "Name:", masterLabelStart: "Basiswert", rowLabel: "Bezeichnung", copyMsg: "Kopiert!", btnClear: "Löschen", btnExport: "Export", btnImport: "Import", btnReset: "Reset", confirmReset: "Alles zurücksetzen?", addRow: "+ Zeile", copyAll: "Alles kopieren", calcTitle: "Rechner", btnSave: "Speichern", msgSave: "Gespeichert", msgLoad: "Geladen", confirmDel: "Löschen?", btnEdit: "Bearbeiten", btnDone: "Fertig" },
-            it: { title: "Simple Sheet PRO", modeBase: "Dalla Base", descBase: "Riferimento fisso: ogni riga si riferisce al valore iniziale in alto", modePrev: "Flusso", descPrev: "Valutato dall'alto verso il basso. Scegli 🏠 o 🔗 per ogni riga.", masterLabelName: "Name:", masterLabelStart: "Valore Base", rowLabel: "Etichetta", copyMsg: "Copiado!", btnClear: "Cancella", btnExport: "Esporta", btnImport: "Importa", btnReset: "Reset", confirmReset: "Ripristinare tutto?", addRow: "+ Riga", copyAll: "Copia tutto", calcTitle: "Calcolatrice", btnSave: "Salva", msgSave: "Salvato", msgLoad: "Caricato", confirmDel: "Elimina?", btnEdit: "Modifica", btnDone: "Fatto" }
+            it: { title: "Simple Sheet PRO", modeBase: "Dalla Base", descBase: "Riferimento fisso: ogni riga si riferisce al valore iniziale in alto", modePrev: "Flusso", descPrev: "Valutato dall'alto verso il basso. Scegli 🏠 o 🔗 per ogni riga.", masterLabelName: "Name:", masterLabelStart: "Valore Base", rowLabel: "Etichetta", copyMsg: "Copiado!", btnClear: "Cancella", btnExport: "Esporta", btnImport: "Importa", btnReset: "Reset", confirmReset: "Ripristinare tutto?", addRow: "+ Riga", copyAll: "Copia tutto", calcTitle: "Calcolatrice", btnSave: "Salva", msgSave: "Salvato", msgLoad: "Carricato", confirmDel: "Elimina?", btnEdit: "Modifica", btnDone: "Fatto" }
         };
 
         let currentLanguage = 'ja'; 
         let isEditMode = false;
         let currentCalc = "0";
 
+        // --- 初期化 ---
         function init() {
+            // 言語ボタン生成
             const langCont = document.getElementById('langContainer');
             Object.keys(languageMap).forEach(lang => {
                 const btn = document.createElement('button');
@@ -204,16 +473,21 @@
                 btn.onclick = () => setLanguage(lang);
                 langCont.appendChild(btn);
             });
-            const s = JSON.parse(localStorage.getItem('simpleSheetSettings')||'{}');
+
+            // 保存された設定の読み込み
+            const s = JSON.parse(localStorage.getItem('simpleSheetSettings') || '{}');
             applyData(s);
             setLanguage(localStorage.getItem('simpleSheetLang') || 'ja'); 
             renderSaveList();
         }
 
+        // --- 言語設定 ---
         function setLanguage(lang) {
             currentLanguage = lang; 
             localStorage.setItem('simpleSheetLang', lang);
             const d = languageMap[lang];
+            
+            // UIテキスト更新
             document.getElementById('title').textContent = d.title;
             document.getElementById('txtModeBase').textContent = d.modeBase;
             document.getElementById('descModeBase').textContent = d.descBase;
@@ -236,14 +510,14 @@
             const editBtn = document.getElementById('editToggle');
             editBtn.textContent = isEditMode ? (d.btnDone + ' ✓') : (d.btnEdit + ' ✎');
             
-            // 各行のラベルのプレースホルダーを更新
-            document.querySelectorAll('.text-label-input').forEach(el => {
-                el.placeholder = d.rowLabel;
+            document.querySelectorAll('.text-label-input').forEach(input => {
+                input.placeholder = d.rowLabel;
             });
-            
+
             updateDisplay();
         }
 
+        // --- 数値フォーマット ---
         function formatNum(num) {
             return num.toLocaleString(undefined, { 
                 minimumFractionDigits: 0, 
@@ -251,27 +525,55 @@
             });
         }
 
+        // --- メイン計算ロジック ---
         function updateDisplay() {
-            const mVal = parseFloat(document.getElementById('masterInput').value)||0;
+            // Mode 1: Smart Sheet (固定参照)
+            const mVal = parseFloat(document.getElementById('masterInput').value) || 0;
             document.querySelectorAll('#rows-container-smart .row').forEach(r => {
-                const id = r.dataset.id, op=document.getElementById('smart-op-'+id).textContent, mult=parseFloat(r.querySelector('.multiplier-input').value)||0, pct=r.querySelector('.percent-toggle').classList.contains('active');
-                let mod=pct?mVal*(mult/100):mult, res=0;
-                if(op==='+') res=mVal+mod; else if(op==='-') res=mVal-mod; else if(op==='×') res=pct?mVal*(mult/100):mVal*mult; else if(op==='÷') res=mult!==0?mVal/mult:0;
+                const id = r.dataset.id;
+                const op = document.getElementById('smart-op-'+id).textContent;
+                const mult = parseFloat(r.querySelector('.multiplier-input').value) || 0;
+                const pct = r.querySelector('.percent-toggle').classList.contains('active');
+                
+                let mod = pct ? mVal * (mult / 100) : mult;
+                let res = 0;
+                
+                if(op === '+') res = mVal + mod;
+                else if(op === '-') res = mVal - mod;
+                else if(op === '×') res = pct ? mVal * (mult / 100) : mVal * mult;
+                else if(op === '÷') res = mult !== 0 ? mVal / mult : 0;
+                
                 r.querySelector('.result-text').textContent = formatNum(res);
             });
-            const mValS = parseFloat(document.getElementById('masterInputSimple').value)||0;
+
+            // Mode 2: Flow (連鎖計算)
+            const mValS = parseFloat(document.getElementById('masterInputSimple').value) || 0;
             let chain = mValS;
             document.querySelectorAll('#rows-container-simple .row').forEach(r => {
-                const id = r.dataset.id, op=document.getElementById('simple-op-'+id).textContent, mult=parseFloat(r.querySelector('.multiplier-input').value)||0, pct=r.querySelector('.percent-toggle').classList.contains('active');
-                const base = document.getElementById('simple-base-'+id).classList.contains('chain') ? chain : mValS;
-                let mod=pct?base*(mult/100):mult, res=0;
-                if(op==='+') res=base+mod; else if(op==='-') res=base-mod; else if(op==='×') res=pct?base*(mult/100):base*mult; else if(op==='÷') res=mult!==0?base/mult:0;
+                const id = r.dataset.id;
+                const op = document.getElementById('simple-op-'+id).textContent;
+                const mult = parseFloat(r.querySelector('.multiplier-input').value) || 0;
+                const pct = r.querySelector('.percent-toggle').classList.contains('active');
+                const isChain = document.getElementById('simple-base-'+id).classList.contains('chain');
+                
+                // chainモードなら前の行の結果、そうでなければ初期値を使う
+                const base = isChain ? chain : mValS;
+                let mod = pct ? base * (mult / 100) : mult;
+                let res = 0;
+                
+                if(op === '+') res = base + mod;
+                else if(op === '-') res = base - mod;
+                else if(op === '×') res = pct ? base * (mult / 100) : base * mult;
+                else if(op === '÷') res = mult !== 0 ? base / mult : 0;
+                
                 r.querySelector('.result-text').textContent = formatNum(res);
-                chain = res;
+                chain = res; // 次の行のために結果を更新
             });
+            
             saveSettings();
         }
 
+        // --- 編集モード切替 ---
         function toggleEditMode() {
             isEditMode = !isEditMode;
             const btn = document.getElementById('editToggle');
@@ -281,6 +583,7 @@
             document.getElementById('saveList').classList.toggle('editing', isEditMode);
         }
 
+        // --- メモリ保存 ---
         function saveToMemory() {
             const data = getScreenData();
             const name = data.masterLabel || "No Name";
@@ -291,6 +594,7 @@
             showMsg(languageMap[currentLanguage].msgSave);
         }
 
+        // --- メモリリスト表示 ---
         function renderSaveList() {
             const cont = document.getElementById('saveList');
             const lib = JSON.parse(localStorage.getItem('sheetLibrary_v3') || '[]');
@@ -298,10 +602,24 @@
             lib.slice().reverse().forEach(item => {
                 const chip = document.createElement('div');
                 chip.className = 'save-chip';
-                chip.innerHTML = `<span>${item.name}</span><span class="del-icon">🗑</span>`;
+                
+                // XSS対策済み
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = item.name;
+                
+                const delIcon = document.createElement('span');
+                delIcon.className = 'del-icon';
+                delIcon.textContent = '🗑';
+                
+                chip.appendChild(nameSpan);
+                chip.appendChild(delIcon);
+                
                 chip.onclick = () => {
                     if(isEditMode) deleteMemory(item.id);
-                    else { applyData(item.content); showMsg(languageMap[currentLanguage].msgLoad); }
+                    else { 
+                        applyData(item.content); 
+                        showMsg(languageMap[currentLanguage].msgLoad); 
+                    }
                 };
                 cont.appendChild(chip);
             });
@@ -316,86 +634,237 @@
             }
         }
 
+        // --- データ取得 ---
         function getScreenData() {
             return {
                 masterLabel: document.getElementById('masterLabel').value,
                 masterInput: document.getElementById('masterInput').value,
                 masterInputSimple: document.getElementById('masterInputSimple').value,
                 lastMode: document.getElementById('smartSheetBtn').classList.contains('active') ? 'smartSheet' : 'customSimple',
-                smartRows: Array.from(document.querySelectorAll('#rows-container-smart .row')).map(r=>({id:r.dataset.id, label:r.querySelector('.text-label-input').value, multiplier:r.querySelector('.multiplier-input').value, operator:document.getElementById('smart-op-'+r.dataset.id).textContent, isPercentActive:r.querySelector('.percent-toggle').classList.contains('active')})),
-                simpleRows: Array.from(document.querySelectorAll('#rows-container-simple .row')).map(r=>({id:r.dataset.id, label:r.querySelector('.text-label-input').value, multiplier:r.querySelector('.multiplier-input').value, operator:document.getElementById('simple-op-'+r.dataset.id).textContent, isPercentActive:r.querySelector('.percent-toggle').classList.contains('active'), baseMode:document.getElementById('simple-base-'+r.dataset.id).classList.contains('chain')?'chain':'master'}))
+                smartRows: Array.from(document.querySelectorAll('#rows-container-smart .row')).map(r => ({
+                    id: r.dataset.id, 
+                    label: r.querySelector('.text-label-input').value, 
+                    multiplier: r.querySelector('.multiplier-input').value, 
+                    operator: document.getElementById('smart-op-'+r.dataset.id).textContent, 
+                    isPercentActive: r.querySelector('.percent-toggle').classList.contains('active')
+                })),
+                simpleRows: Array.from(document.querySelectorAll('#rows-container-simple .row')).map(r => ({
+                    id: r.dataset.id, 
+                    label: r.querySelector('.text-label-input').value, 
+                    multiplier: r.querySelector('.multiplier-input').value, 
+                    operator: document.getElementById('simple-op-'+r.dataset.id).textContent, 
+                    isPercentActive: r.querySelector('.percent-toggle').classList.contains('active'), 
+                    baseMode: document.getElementById('simple-base-'+r.dataset.id).classList.contains('chain') ? 'chain' : 'master'
+                }))
             };
         }
 
+        // --- データ適用 ---
         function applyData(s) {
             if(!s || !s.smartRows) { 
                 if(!document.querySelector('.row')) { addRowSmart(); addRowSimple(); }
                 return; 
             }
-            document.getElementById('masterLabel').value = s.masterLabel||'';
-            document.getElementById('masterInput').value = s.masterInput||1000;
-            document.getElementById('masterInputSimple').value = s.masterInputSimple||1000;
+            document.getElementById('masterLabel').value = s.masterLabel || '';
+            document.getElementById('masterInput').value = s.masterInput || '';
+            document.getElementById('masterInputSimple').value = s.masterInputSimple || '';
+            
             document.getElementById('rows-container-smart').innerHTML = '';
             document.getElementById('rows-container-simple').innerHTML = '';
-            s.smartRows.forEach(r=>addRowSmart(r));
-            s.simpleRows.forEach(r=>addRowSimple(r));
+            s.smartRows.forEach(r => addRowSmart(r));
+            s.simpleRows.forEach(r => addRowSimple(r));
             switchMode(s.lastMode || 'smartSheet');
             updateDisplay();
         }
 
-        function saveSettings(){ localStorage.setItem('simpleSheetSettings', JSON.stringify(getScreenData())); }
+        function saveSettings(){ 
+            localStorage.setItem('simpleSheetSettings', JSON.stringify(getScreenData())); 
+        }
 
+        // --- 行追加: Smart Mode ---
         function addRowSmart(s=null) {
             const id = s ? s.id : Math.random().toString(36).substr(2, 5);
             const ph = languageMap[currentLanguage].rowLabel;
-            const div = document.createElement('div'); div.className='row'; div.dataset.id=id;
-            div.innerHTML = `<input type="text" class="text-label-input" placeholder="${ph}" value="${s?s.label:''}" oninput="saveSettings()"><div class="calc-area"><div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','smart',1)">▲</div><div class="operator-display" id="smart-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','smart',-1)">▼</div></div><input type="number" step="any" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()"><div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div></div><div class="result-area"><div class="result-text">0</div><div style="display:flex; gap:10px;"><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div></div>`;
-            document.getElementById('rows-container-smart').appendChild(div); updateDisplay();
+            const div = document.createElement('div'); 
+            div.className = 'row'; 
+            div.dataset.id = id;
+            const val = s ? s.multiplier : '';
+            
+            div.innerHTML = `
+                <input type="text" class="text-label-input" placeholder="${ph}" value="${s?s.label:''}" oninput="saveSettings()">
+                <div class="calc-area">
+                    <div class="operator-group">
+                        <div class="operator-control" onclick="changeOp('${id}','smart',1)">▲</div>
+                        <div class="operator-display" id="smart-op-${id}">${s?s.operator:'+'}</div>
+                        <div class="operator-control" onclick="changeOp('${id}','smart',-1)">▼</div>
+                    </div>
+                    <input type="number" step="any" class="multiplier-input" value="${val}" placeholder="0" oninput="updateDisplay()">
+                    <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
+                </div>
+                <div class="result-area">
+                    <div class="result-text">0</div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="action-btn" onclick="copyRowVal(this)">📋</button>
+                        <button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('rows-container-smart').appendChild(div); 
+            updateDisplay();
         }
 
+        // --- 行追加: Flow Mode ---
         function addRowSimple(s=null) {
             const id = s ? s.id : Math.random().toString(36).substr(2, 5);
             const ph = languageMap[currentLanguage].rowLabel;
-            const div = document.createElement('div'); div.className='row'; div.dataset.id=id;
+            const div = document.createElement('div'); 
+            div.className = 'row'; 
+            div.dataset.id = id;
             const isChain = s ? s.baseMode==='chain' : true;
-            div.innerHTML = `<input type="text" class="text-label-input" placeholder="${ph}" value="${s?s.label:''}" oninput="saveSettings()"><div class="calc-area"><div id="simple-base-${id}" class="base-toggle ${isChain?'chain':''}" onclick="this.classList.toggle('chain');this.textContent=this.classList.contains('chain')?'🔗':'🏠';updateDisplay()">${isChain?'🔗':'🏠'}</div><div class="operator-group"><div class="operator-control" onclick="changeOp('${id}','simple',1)">▲</div><div class="operator-display" id="simple-op-${id}">${s?s.operator:'+'}</div><div class="operator-control" onclick="changeOp('${id}','simple',-1)">▼</div></div><input type="number" step="any" class="multiplier-input" value="${s?s.multiplier:'0'}" oninput="updateDisplay()"><div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div></div><div class="result-area"><div class="result-text">0</div><div style="display:flex; gap:10px;"><button class="action-btn" onclick="copyRowVal(this)">📋</button><button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button></div></div>`;
-            document.getElementById('rows-container-simple').appendChild(div); updateDisplay();
+            const val = s ? s.multiplier : '';
+
+            div.innerHTML = `
+                <input type="text" class="text-label-input" placeholder="${ph}" value="${s?s.label:''}" oninput="saveSettings()">
+                <div class="calc-area">
+                    <div id="simple-base-${id}" class="base-toggle ${isChain?'chain':''}" onclick="this.classList.toggle('chain');this.textContent=this.classList.contains('chain')?'🔗':'🏠';updateDisplay()">
+                        ${isChain?'🔗':'🏠'}
+                    </div>
+                    <div class="operator-group">
+                        <div class="operator-control" onclick="changeOp('${id}','simple',1)">▲</div>
+                        <div class="operator-display" id="simple-op-${id}">${s?s.operator:'+'}</div>
+                        <div class="operator-control" onclick="changeOp('${id}','simple',-1)">▼</div>
+                    </div>
+                    <input type="number" step="any" class="multiplier-input" value="${val}" placeholder="0" oninput="updateDisplay()">
+                    <div class="percent-toggle ${s&&s.isPercentActive?'active':''}" onclick="this.classList.toggle('active');updateDisplay()">%</div>
+                </div>
+                <div class="result-area">
+                    <div class="result-text">0</div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="action-btn" onclick="copyRowVal(this)">📋</button>
+                        <button class="action-btn" onclick="this.closest('.row').remove();updateDisplay()">🗑️</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('rows-container-simple').appendChild(div); 
+            updateDisplay();
         }
 
-        function changeOp(id,m,d){ const ops=['+','-','×','÷']; const el=document.getElementById(m+'-op-'+id); el.textContent=ops[(ops.indexOf(el.textContent)+d+4)%4]; updateDisplay(); }
-        function switchMode(m){ document.getElementById('smart-sheet-mode').style.display=m==='smartSheet'?'block':'none'; document.getElementById('custom-simple-mode').style.display=m==='customSimple'?'block':'none'; document.getElementById('smartSheetBtn').classList.toggle('active',m==='smartSheet'); document.getElementById('customSimpleBtn').classList.toggle('active',m==='customSimple'); updateDisplay(); }
-        
-        function copyRowVal(btn){ navigator.clipboard.writeText(btn.closest('.result-area').querySelector('.result-text').textContent.replace(/,/g,'')); showMsg(languageMap[currentLanguage].copyMsg); }
-        function copyPage(m){ 
-            let t = `【${document.getElementById('masterLabel').value || 'Sheet'}】\n`;
-            const container = m === 'smart' ? '#rows-container-smart' : '#rows-container-simple';
-            document.querySelectorAll(container + ' .row').forEach(r => { t += `${r.querySelector('.text-label-input').value || '-'}\t${r.querySelector('.result-text').textContent.replace(/,/g,'')}\n`; });
-            navigator.clipboard.writeText(t); showMsg(languageMap[currentLanguage].copyMsg);
-        }
-
-        function calcInput(v) { if(currentCalc==="0" && v!==".") currentCalc=v; else currentCalc+=v; document.getElementById('calcDisplay').value=currentCalc; }
-        function calcClear() { currentCalc="0"; document.getElementById('calcDisplay').value="0"; }
-        function calcBack() { if(currentCalc.length > 1) { currentCalc = currentCalc.slice(0, -1); } else { currentCalc = "0"; } document.getElementById('calcDisplay').value = currentCalc; }
-        function calcResult() { 
-            try { 
-                let res = eval(currentCalc.replace(/×/g, '*').replace(/÷/g, '/')); 
-                currentCalc = Number.isInteger(res) ? res.toString() : parseFloat(res.toFixed(8)).toString(); 
-            } catch(e) { currentCalc="Error"; } 
-            document.getElementById('calcDisplay').value=currentCalc; 
-        }
-        function copyCalcResult() { navigator.clipboard.writeText(document.getElementById('calcDisplay').value); showMsg(languageMap[currentLanguage].copyMsg); }
-        function toggleCalc() { document.getElementById('sideCalc').classList.toggle('active'); }
-
-        function clearNumbers(){ 
-            document.getElementById('masterInput').value=0; 
-            document.getElementById('masterInputSimple').value=0; 
-            document.querySelectorAll('.multiplier-input').forEach(i=>i.value=0); 
+        // --- ヘルパー関数 ---
+        function changeOp(id, m, d) { 
+            const ops = ['+','-','×','÷']; 
+            const el = document.getElementById(m+'-op-'+id); 
+            el.textContent = ops[(ops.indexOf(el.textContent) + d + 4) % 4]; 
             updateDisplay(); 
         }
-        function fullReset(){ if(confirm(languageMap[currentLanguage].confirmReset)){ localStorage.clear(); location.reload(); } }
-        function showMsg(t){ const m=document.getElementById('saveMessage'); m.textContent=t; m.style.opacity=1; setTimeout(()=>m.style.opacity=0, 1500); }
-        function exportData() { navigator.clipboard.writeText(btoa(JSON.stringify(localStorage))); showMsg("Exported!"); }
-        function importData() { const str = prompt("Paste code:"); if(str) { try{const d = JSON.parse(atob(str)); Object.keys(d).forEach(k=>localStorage.setItem(k, d[k])); location.reload();}catch(e){alert("Error");} } }
+
+        function switchMode(m) { 
+            document.getElementById('smart-sheet-mode').style.display = m==='smartSheet' ? 'block' : 'none'; 
+            document.getElementById('custom-simple-mode').style.display = m==='customSimple' ? 'block' : 'none'; 
+            document.getElementById('smartSheetBtn').classList.toggle('active', m==='smartSheet'); 
+            document.getElementById('customSimpleBtn').classList.toggle('active', m==='customSimple'); 
+            updateDisplay(); 
+        }
+        
+        function copyRowVal(btn) { 
+            navigator.clipboard.writeText(btn.closest('.result-area').querySelector('.result-text').textContent.replace(/,/g,'')); 
+            showMsg(languageMap[currentLanguage].copyMsg); 
+        }
+
+        function copyPage(m) { 
+            let t = `【${document.getElementById('masterLabel').value || 'Sheet'}】\n`;
+            const container = m === 'smart' ? '#rows-container-smart' : '#rows-container-simple';
+            document.querySelectorAll(container + ' .row').forEach(r => { 
+                t += `${r.querySelector('.text-label-input').value || '-'}\t${r.querySelector('.result-text').textContent.replace(/,/g,'')}\n`; 
+            });
+            navigator.clipboard.writeText(t); 
+            showMsg(languageMap[currentLanguage].copyMsg);
+        }
+
+        // --- 電卓ロジック ---
+        function calcInput(v) { 
+            if(currentCalc === "0" && v !== ".") currentCalc = v; 
+            else currentCalc += v; 
+            document.getElementById('calcDisplay').value = currentCalc; 
+        }
+        function calcClear() { 
+            currentCalc = "0"; 
+            document.getElementById('calcDisplay').value = "0"; 
+        }
+        function calcBack() { 
+            if(currentCalc.length > 1) { currentCalc = currentCalc.slice(0, -1); } 
+            else { currentCalc = "0"; } 
+            document.getElementById('calcDisplay').value = currentCalc; 
+        }
+        
+        function calcResult() { 
+            try { 
+                let expression = currentCalc
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/%/g, '/100');
+                
+                let res = eval(expression); 
+                currentCalc = Number.isInteger(res) ? res.toString() : parseFloat(res.toFixed(8)).toString(); 
+            } catch(e) { 
+                currentCalc = "Error"; 
+            } 
+            document.getElementById('calcDisplay').value = currentCalc; 
+        }
+        
+        function copyCalcResult() { 
+            navigator.clipboard.writeText(document.getElementById('calcDisplay').value); 
+            showMsg(languageMap[currentLanguage].copyMsg); 
+        }
+        function toggleCalc() { 
+            document.getElementById('sideCalc').classList.toggle('active'); 
+        }
+
+        // --- ユーティリティ機能 ---
+        function clearNumbers() { 
+            document.getElementById('masterInput').value = ""; 
+            document.getElementById('masterInputSimple').value = ""; 
+            document.querySelectorAll('.multiplier-input').forEach(i => i.value = ""); 
+            updateDisplay(); 
+        }
+        function fullReset() { 
+            if(confirm(languageMap[currentLanguage].confirmReset)) { 
+                localStorage.clear(); 
+                location.reload(); 
+            } 
+        }
+        function showMsg(t) { 
+            const m = document.getElementById('saveMessage'); 
+            m.textContent = t; 
+            m.style.opacity = 1; 
+            setTimeout(() => m.style.opacity = 0, 1500); 
+        }
+
+        function exportData() { 
+            const exportObj = { ...localStorage }; 
+            navigator.clipboard.writeText(btoa(JSON.stringify(exportObj))); 
+            showMsg("Exported!"); 
+        }
+        function importData() { 
+            const str = prompt("Paste code:"); 
+            if(str) { 
+                try {
+                    const d = JSON.parse(atob(str)); 
+                    Object.keys(d).forEach(k => localStorage.setItem(k, d[k])); 
+                    location.reload();
+                } catch(e) { 
+                    alert("Error"); 
+                } 
+            } 
+        }
+
+        // --- Service Worker登録 (PWA必須) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered!', reg))
+                    .catch(err => console.log('SW failed', err));
+            });
+        }
     </script>
 </body>
 </html>
