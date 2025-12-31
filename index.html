@@ -97,7 +97,6 @@
             color: #000; 
             outline: none; 
         }
-        /* プレースホルダーの色を少し薄くする */
         .multiplier-input::placeholder, .master-input::placeholder {
             color: #ccc;
             font-weight: normal;
@@ -343,6 +342,60 @@
 </head>
 <body onload="init()">
 
+    <div id="startLockScreen" style="
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #1a237e; color: #fff; z-index: 99999;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        text-align: center;
+    ">
+        <h2 style="font-size: 24px; margin-bottom: 20px;">🔒 Simple Sheet PRO</h2>
+        <p style="margin-bottom: 10px;">Enter Passcode / パスコードを入力</p>
+        
+        <input type="password" id="inputPass" placeholder="****" style="
+            font-size: 24px; padding: 10px; border-radius: 8px; border: none; 
+            text-align: center; width: 200px; margin-bottom: 20px; color:#000;
+        ">
+        
+        <button onclick="checkStartPass()" style="
+            font-size: 18px; padding: 12px 40px; border-radius: 30px; border: none;
+            background: #28a745; color: white; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        ">
+            Unlock
+        </button>
+        
+        <p style="margin-top: 30px; font-size: 12px; opacity: 0.8;">
+            (Passcode is in the Android App)
+        </p>
+    </div>
+
+    <script>
+        // ★★★ 設定：2つのパスコードに対応 ★★★
+        const PASS_TEST = "1111"; // テスター用
+        const PASS_REAL = "5963"; // 本番リリース用
+
+        // 1. ページを開いた時のチェック
+        document.addEventListener('DOMContentLoaded', function() {
+            // すでに認証済み（ログイン済み）なら、ロック画面を消す
+            if(localStorage.getItem("proWebUnlocked") === "true") {
+                document.getElementById("startLockScreen").style.display = "none";
+            }
+        });
+
+        // 2. ボタンを押した時のチェック
+        function checkStartPass() {
+            const val = document.getElementById("inputPass").value;
+            // どちらか片方でも合っていればOK
+            if(val === PASS_TEST || val === PASS_REAL) {
+                alert("Authenticated! / 認証成功");
+                localStorage.setItem("proWebUnlocked", "true"); // 記憶する
+                document.getElementById("startLockScreen").style.display = "none"; // カーテンを開ける
+            } else {
+                alert("Wrong Passcode / 間違っています");
+                document.getElementById("inputPass").value = ""; // 入力を消す
+            }
+        }
+    </script>
     <div id="saveMessage"></div>
     
     <button class="calc-toggle-btn" onclick="toggleCalc()">🧮</button>
